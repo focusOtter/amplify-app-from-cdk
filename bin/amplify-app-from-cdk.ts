@@ -1,21 +1,24 @@
 #!/usr/bin/env node
-import 'source-map-support/register';
-import * as cdk from 'aws-cdk-lib';
-import { AmplifyAppFromCdkStack } from '../lib/amplify-app-from-cdk-stack';
+import 'source-map-support/register'
+import * as cdk from 'aws-cdk-lib'
+import { AmplifyAppFromCdkStack } from '../lib/amplify-app-from-cdk-stack'
+import { config } from '../project-config'
+import { AmplifyStack } from '../lib/amplify-frontend-stack'
 
-const app = new cdk.App();
-new AmplifyAppFromCdkStack(app, 'AmplifyAppFromCdkStack', {
-  /* If you don't specify 'env', this stack will be environment-agnostic.
-   * Account/Region-dependent features and context lookups will not work,
-   * but a single synthesized template can be deployed anywhere. */
+const app = new cdk.App()
 
-  /* Uncomment the next line to specialize this stack for the AWS Account
-   * and Region that are implied by the current CLI configuration. */
-  // env: { account: process.env.CDK_DEFAULT_ACCOUNT, region: process.env.CDK_DEFAULT_REGION },
+const backendApp = new AmplifyAppFromCdkStack(
+	app,
+	`AmplifyAppFromCdkStack-${config.env.dev.stageName}`,
+	{
+		stage: config.env.dev.stageName,
+	}
+)
 
-  /* Uncomment the next line if you know exactly what Account and Region you
-   * want to deploy the stack to. */
-  // env: { account: '123456789012', region: 'us-east-1' },
-
-  /* For more information, see https://docs.aws.amazon.com/cdk/latest/guide/environments.html */
-});
+const amplifyApp = new AmplifyStack(
+	app,
+	`AmplifyStack-${config.env.dev.stageName}`,
+	{
+		stage: config.env.dev.stageName,
+	}
+)
